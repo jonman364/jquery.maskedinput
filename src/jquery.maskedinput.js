@@ -201,6 +201,9 @@ $.fn.extend({
 			function androidInputEvent(e) {
 				var curVal = input.val();
 				var pos = input.caret();
+				var proxy = function() {
+					$.proxy($.fn.caret, input, pos.begin, pos.begin)();
+				};
 				if (oldVal && oldVal.length && oldVal.length > curVal.length ) {
 					// a deletion or backspace happened
 					checkVal(true);
@@ -211,7 +214,7 @@ $.fn.extend({
 						while (pos.begin < firstNonMaskPos && !tests[pos.begin])
 							pos.begin++;
 					}
-					input.caret(pos.begin,pos.begin);
+					setTimout(proxy, 0);
 				} else {
 					var pos2 = checkVal(true);
 					var lastEnteredValue = curVal.charAt(pos.begin);
@@ -227,7 +230,7 @@ $.fn.extend({
 							}
 						}
 					}
-					input.caret(pos.begin,pos.begin);
+					setTimeout(proxy, 0);
 				}
 				tryFireCompleted();
 			}
